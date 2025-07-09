@@ -3,7 +3,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ self, nixpkgs, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -19,6 +19,9 @@
           "E501"
         ];
       } ./midi2beep.py;
+      overlays."${system}".default = final: prev: {
+        midi2beep = self.packages."${system}".default;
+      };
       devShells."${system}".default = pkgs.mkShell {
         buildInputs =
           dependencies
